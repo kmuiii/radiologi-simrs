@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('radilogy_reports', function (Blueprint $table) {
+        Schema::create('radiology_reports', function (Blueprint $table) {
             $table->id();
             $table->foreignId('radiology_order_id')->unique()->constrained('radiology_order')->cascadeOnDelete();
             $table->foreignId('report_template_id')->nullable()->constrained();   
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('radilogy_reports');
+        Schema::dropIfExists('radiology_reports');
     }
 };
