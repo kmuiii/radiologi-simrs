@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('radiology_iamges', function (Blueprint $table) {
+        Schema::create('radiology_images', function (Blueprint $table) {
             $table->id();
             $table->foreignId('radiology_order_item_id')->constrained()->cascadeOnDelete();
             $table->string('file_path');
