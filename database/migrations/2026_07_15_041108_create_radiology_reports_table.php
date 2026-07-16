@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('radiology_order_id')->unique()->constrained('radiology_order')->cascadeOnDelete();
             $table->foreignId('report_template_id')->nullable()->constrained();   
-            $table->json('template_snapshot')->nullable();
+            $table->jsonb('template_snapshot')->nullable();
             $table->text('findings');
             $table->text('impression');
             $table->enum('impression_source', ['manual', 'ai_generated', 'ai_edited'])->default('manual');        

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('radiology_order_id')->constrained('radiology_order')->cascadeOnDelete();
             $table->foreignId('examination_type_id')->constrained('examination_types');
+            $table->decimal('price', 12, 2);
             $table->timestamps();
         });
     }
