@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('radiology_order', function (Blueprint $table) {
+        Schema::create('tindakan', function (Blueprint $table) {
             $table->id();
-            $table->string('order_number')->unique();
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('registrasi_id')->constrained('registrasi')->cascadeOnDelete();
+            $table->foreignId('pelayanan_id')->constrained('pelayanan')->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained('patients');
+            $table->foreignId('jenis_tindakan_id')->constrained('jenis_tindakan');
             $table->string('referring_doctor_name')->nullable();
-            $table->foreignId('radiologist_id')->constrained('users');
             $table->text('clinical_notes')->nullable();
-            $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending');
-            $table->foreignId('created_by')->constrained('users');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('radiology_order');
+        Schema::dropIfExists('tindakan');
     }
 };

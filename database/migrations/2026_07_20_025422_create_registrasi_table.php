@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('radiology_order_items', function (Blueprint $table) {
+        Schema::create('registrasi', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('radiology_order_id')->constrained('radiology_order')->cascadeOnDelete();
-            $table->foreignId('examination_type_id')->constrained('examination_types');
-            $table->decimal('price', 12, 2);
+            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
+            $table->string('no_registrasi')->unique();
+            $table->dateTime('tanggal_registrasi');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('radiology_order_items');
+        Schema::dropIfExists('registrasi');
     }
 };

@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('radiology_images', function (Blueprint $table) {
+        Schema::create('jenis_tindakan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('radiology_order_item_id')->constrained()->cascadeOnDelete();
-            $table->string('file_path');
-            $table->foreignId('uploaded_by')->constrained('users');
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('radiology_images');
+        Schema::dropIfExists('jenis_tindakan');
     }
 };
