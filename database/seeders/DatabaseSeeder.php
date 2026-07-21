@@ -12,13 +12,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         $this->call([
             UserSeeder::class,
             PatientSeeder::class,
+            MasterPoliSeeder::class,
+            JenisTindakanSeeder::class,
             ExaminationTypeSeeder::class,
             ReportTemplateSeeder::class,
+            RegistrasiSeeder::class,
+            PelayananSeeder::class,
+            TindakanSeeder::class,
+            DetailTindakanSeeder::class,
+            TindakanHasilSeeder::class,
+            RadiologyImageSeeder::class,
+            CpptSeeder::class,
         ]);
     }
 }
