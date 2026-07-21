@@ -17,9 +17,9 @@ class ExaminationType extends Model
         return $this->hasMany(ReportTemplate::class);
     }
 
-    public function radiologyOrderItems()
+    public function tindakan()
     {
-        return $this->hasMany(RadiologyOrderItems::class);
+        return $this->hasMany(Tindakan::class);
     }
 
 
