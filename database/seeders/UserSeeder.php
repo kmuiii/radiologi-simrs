@@ -21,18 +21,21 @@ class UserSeeder extends Seeder
             'role' => 'admin'
         ]);
 
-        User::create([
-            'name' => 'dr. Andi Pratama, Sp.Rad',
-            'email' => 'andi.radiologi@indotechnomedic.test',
-            'password' => Hash::make('password'),
-            'role' => 'radiologist',
-        ]);
+        $radiologists = [
+            'dr. Andi Pratama, Sp.Rad',
+            'dr. Siti Rahayu, Sp.Rad',
+            'dr. Budi Wijaya, Sp.Rad',
+            'dr. Maya Kusuma, Sp.Rad',
+            'dr. Rio Hakim, Sp.Rad',
+        ];
 
-        User::create([
-            'name' => 'dr. Siti Rahayu, Sp.Rad',
-            'email' => 'siti.radiologi@indotechnomedic.test',
-            'password' => Hash::make('password'),
-            'role' => 'radiologist',
-        ]);
+        foreach ($radiologists as $i => $name) {
+            User::create([
+                'name' => $name,
+                'email' => "radiolog{$i}@techno.test",
+                'password' => Hash::make('password'),
+                'role' => 'radiologist'
+            ]);
+        }
     }
 }
