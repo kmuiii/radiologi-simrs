@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Support\Str;
 
-#[Fillable(['tindakan_id','examination_type_id', 'radiologist_id', 'price', 'status'])]
+#[Fillable(['no_order', 'tindakan_id','examination_type_id', 'radiologist_id', 'price', 'status'])]
 class DetailTindakan extends Model
 {
 
@@ -19,7 +20,20 @@ class DetailTindakan extends Model
             if (empty($item->price)) {
                 $item->price = $item->examinationType->price;
             }
+
+            if (empty($item->no_order)) {
+                $item->no_order = static::generateNoOrder();
+            }
         });
+    }
+
+    protected static function generateNoOrder(): string
+    {
+        do {
+            $candidate = 'RAD-' . now()->format('Ymd') . '-' . strtoupper(Str::random(5));
+        } while (static::where('no_order', $candidate)->exists());
+
+        return $candidate;
     }
 
     public function tindakan()
