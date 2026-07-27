@@ -17,9 +17,9 @@ class ExaminationType extends Model
         return $this->hasMany(ReportTemplate::class);
     }
 
-    public function tindakan()
+    public function detailTindakan()
     {
-        return $this->hasMany(Tindakan::class);
+        return $this->hasMany(DetailTindakan::class);
     }
 
 
