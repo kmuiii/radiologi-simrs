@@ -60,4 +60,24 @@ class DetailTindakan extends Model
     {
         return $this->hasMany(RadiologyImage::class);
     }
+
+    public function getStatusLabelAttribute(): string
+    {
+        return match ($this->status) {
+            'completed' => 'Selesai',
+            'in_progress' => 'Diproses',
+            'pending' => 'Menunggu',
+            default => 'pending',
+        };
+    }
+
+    public function getStatusColorAttribute(): string
+    {
+        return match ($this->status) {
+            'completed' => 'green',
+            'in_progress' => 'yellow',
+            'pending' => 'zinc',
+            default => 'zinc',
+        };
+    }
 }
