@@ -10,17 +10,53 @@
                 <flux:sidebar.collapse class="lg:hidden" />
             </flux:sidebar.header>
 
+            
             <flux:sidebar.nav>
-                <flux:sidebar.group :heading="__('Platform')" class="grid">
-                    <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                        {{ __('Dashboard') }}
-                    </flux:sidebar.item>
+                <flux:sidebar.group :heading="__('Radiologi')" class="grid">
+                    <flux:navlist.item icon="home" href="{{ route('admin.dashboard') }}" :current="request()->routeIs('admin.dashboard')">
+                        Dashboard
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="users" href="{{ route('admin.users.index') }}" :current="request()->routeIs('admin.users.*')">
+                        Users
+                    </flux:navlist.item>
+
+                    {{-- Master Data --}}
+                    <flux:sidebar.group icon="folder" expandable heading="Master Data" class="grid">
+                        <flux:navlist.item href="{{ route('admin.master.patients.index') }}" :current="request()->routeIs('admin.master.patients.*')">
+                            Pasien
+                        </flux:navlist.item>
+                        <flux:navlist.item href="{{ route('admin.master.examination-types.index') }}" :current="request()->routeIs('admin.master.examination-types.*')">
+                            Tarif Tindakan
+                        </flux:navlist.item>
+                        <flux:navlist.item href="{{ route('admin.master.report-templates.index') }}" :current="request()->routeIs('admin.master.report-templates.*')">
+                            Template
+                        </flux:navlist.item>
+                        <flux:navlist.item href="{{ route('admin.master.poli.index') }}" :current="request()->routeIs('admin.master.poli.*')">
+                            Master Poli
+                        </flux:navlist.item>
+                        <flux:navlist.item href="{{ route('admin.master.jenis-tindakan.index') }}" :current="request()->routeIs('admin.master.jenis-tindakan.*')">
+                            Jenis Tindakan
+                        </flux:navlist.item>
+                    </flux:sidebar.group>
+
+                    {{-- Pendaftaran --}}
+                    <flux:sidebar.group icon="inbox-stack" expandable heading="Pendaftaran" class="grid">
+                        <flux:navlist.item href="{{ route('admin.pendaftaran.registrasi.index') }}" :current="request()->routeIs('admin.pendaftaran.registrasi.*')">
+                            Registrasi
+                        </flux:navlist.item>
+                        <flux:navlist.item href="{{ route('admin.pendaftaran.pelayanan.index') }}" :current="request()->routeIs('admin.pendaftaran.pelayanan.*')">
+                            Pelayanan
+                        </flux:navlist.item>
+                        <flux:navlist.item href="{{ route('admin.pendaftaran.tindakan.index') }}" :current="request()->routeIs('admin.pendaftaran.tindakan.*')">
+                            Tindakan
+                        </flux:navlist.item>
+                    </flux:navlist.group>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 
             <flux:spacer />
 
-            <flux:sidebar.nav>
+            <!-- <flux:sidebar.nav>
                 <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
                     {{ __('Repository') }}
                 </flux:sidebar.item>
@@ -28,9 +64,9 @@
                 <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
                     {{ __('Documentation') }}
                 </flux:sidebar.item>
-            </flux:sidebar.nav>
+            </flux:sidebar.nav> -->
 
-            <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
+            <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()?->name" />
         </flux:sidebar>
 
         <!-- Mobile User Menu -->
@@ -41,7 +77,7 @@
 
             <flux:dropdown position="top" align="end">
                 <flux:profile
-                    :initials="auth()->user()->initials()"
+                    :initials="auth()->user()?->initials()"
                     icon-trailing="chevron-down"
                 />
 
@@ -50,13 +86,13 @@
                         <div class="p-0 text-sm font-normal">
                             <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                                 <flux:avatar
-                                    :name="auth()->user()->name"
-                                    :initials="auth()->user()->initials()"
+                                    :name="auth()->user()?->name"
+                                    :initials="auth()->user()?->initials()"
                                 />
 
                                 <div class="grid flex-1 text-start text-sm leading-tight">
-                                    <flux:heading class="truncate">{{ auth()->user()->name }}</flux:heading>
-                                    <flux:text class="truncate">{{ auth()->user()->email }}</flux:text>
+                                    <flux:heading class="truncate">{{ auth()->user()?->name }}</flux:heading>
+                                    <flux:text class="truncate">{{ auth()->user()?->email }}</flux:text>
                                 </div>
                             </div>
                         </div>
