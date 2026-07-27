@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
     {
         User::create([
             'name' => 'Admin SIMRS',
-            'email' => 'admin@techno.test',
+            'username' => 'superadmin',
             'password' => Hash::make('istimewa'),
             'role' => 'admin'
         ]);
@@ -32,7 +32,7 @@ class UserSeeder extends Seeder
         foreach ($radiologists as $i => $name) {
             User::create([
                 'name' => $name,
-                'email' => "radiolog{$i}@techno.test",
+                'username' => 'radiolog' . ($i + 1),
                 'password' => Hash::make('password'),
                 'role' => 'radiologist'
             ]);

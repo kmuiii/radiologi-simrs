@@ -11,16 +11,7 @@
             @csrf
 
             <!-- Email Address -->
-            <flux:input
-                name="email"
-                :label="__('Email address')"
-                :value="old('email')"
-                type="email"
-                required
-                autofocus
-                autocomplete="email"
-                placeholder="email@example.com"
-            />
+            <flux:input wire:model="username" label="Username" type="text" />
 
             <!-- Password -->
             <div class="relative">
