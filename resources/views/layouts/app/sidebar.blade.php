@@ -13,10 +13,10 @@
             
             <flux:sidebar.nav>
                 <flux:sidebar.group :heading="__('Radiologi')" class="grid">
-                    <flux:navlist.item icon="home" href="{{ route('admin.dashboard') }}" :current="request()->routeIs('admin.dashboard')">
+                    <flux:navlist.item icon="home" href="{{ route('admin.dashboard') }}" :current="request()->routeIs('admin.dashboard')" wire:navigate>
                         Dashboard
                     </flux:navlist.item>
-                    <flux:navlist.item icon="users" href="{{ route('admin.users.index') }}" :current="request()->routeIs('admin.users.*')">
+                    <flux:navlist.item icon="users" href="{{ route('admin.users.index') }}" :current="request()->routeIs('admin.users.*')" wire:navigate>
                         Users
                     </flux:navlist.item>
 
@@ -25,13 +25,13 @@
                         <flux:navlist.item href="{{ route('admin.master.patients.index') }}" :current="request()->routeIs('admin.master.patients.*')">
                             Pasien
                         </flux:navlist.item>
-                        <flux:navlist.item href="{{ route('admin.master.examination-types.index') }}" :current="request()->routeIs('admin.master.examination-types.*')">
+                        <flux:navlist.item href="{{ route('admin.master.examination-types.index') }}" :current="request()->routeIs('admin.master.examination-types.*')" wire:navigate>
                             Tarif Tindakan
                         </flux:navlist.item>
                         <flux:navlist.item href="{{ route('admin.master.report-templates.index') }}" :current="request()->routeIs('admin.master.report-templates.*')">
                             Template
                         </flux:navlist.item>
-                        <flux:navlist.item href="{{ route('admin.master.poli.index') }}" :current="request()->routeIs('admin.master.poli.*')">
+                        <flux:navlist.item href="{{ route('admin.master.master-poli.index') }}" :current="request()->routeIs('admin.master-poli.*')">
                             Master Poli
                         </flux:navlist.item>
                         <flux:navlist.item href="{{ route('admin.master.jenis-tindakan.index') }}" :current="request()->routeIs('admin.master.jenis-tindakan.*')">
