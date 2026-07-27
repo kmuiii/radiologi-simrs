@@ -144,7 +144,7 @@ new class extends Component
 
     <div class="flex items-center justify-between">
         <flux:heading size="xl">Manajemen Users</flux:heading>
-        <flux:button variant="primary" icon="plus" wire:click="openCreateModal">
+        <flux:button variant="primary" icon="plus" color="blue" wire:click="openCreateModal">
             Tambah User
         </flux:button>
     </div>
@@ -263,7 +263,7 @@ new class extends Component
                 <flux:modal.close>
                     <flux:button variant="ghost">Batal</flux:button>
                 </flux:modal.close>
-                <flux:button type="submit" variant="primary">
+                <flux:button type="submit" variant="primary" color="blue">
                     {{ $editingId ? 'Simpan Perubahan' : 'Tambah User' }}
                 </flux:button>
             </div>
