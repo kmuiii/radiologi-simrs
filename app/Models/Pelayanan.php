@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 
-#[Fillable(['registrasi_id', 'master_poli_id', 'rujukan_dari_pelayanan_id', 'status'])]
+#[Fillable(['registrasi_id', 'master_poli_id', 'dpjp_id','rujukan_dari_pelayanan_id', 'status'])]
 class Pelayanan extends Model
 {
     protected $table = 'pelayanan';
@@ -19,6 +19,11 @@ class Pelayanan extends Model
     public function masterPoli()
     {
         return $this->belongsTo(MasterPoli::class);
+    }
+
+    public function dpjp()
+    {
+        return $this->belongsTo(User::class, 'dpjp_id');
     }
 
     public function rujukanDari()
