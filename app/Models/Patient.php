@@ -12,6 +12,25 @@ class Patient extends Model
 {
     use HasFactory;
 
+    protected static function booted()
+    {
+        static::creating(function ($item) {
+            if (empty($item->mrn)) {
+                $item->mrn = static::generateMrn();
+            }
+        });
+    }
+
+    // Generate No Medical Record
+    protected static function generateMrn(): string
+    {
+        do {
+            $candidate = 'RM-' . str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        } while (static::where('mrn', $candidate)->exists());
+
+        return $candidate;
+    }
+
     protected $casts = [
         'date_of_birth' => 'date',
     ];
