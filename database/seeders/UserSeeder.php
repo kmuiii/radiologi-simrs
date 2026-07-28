@@ -37,5 +37,39 @@ class UserSeeder extends Seeder
                 'role' => 'radiologist'
             ]);
         }
+
+        $dokterPoli = [
+            'dr. Hendra Gunawan',
+            'dr. Lestari Dewi',
+            'dr. Fajar Nugroho',
+            'dr. Ayu Permata',
+            'dr. Doni Saputra',
+            'dr. Winda Sari',
+            'dr. Bayu Pradana',
+            'dr. Mega Lestari',
+            'dr. Rina Wijaya',
+            'dr. Eko Kurniawan',
+            'dr. Sari Puspita',
+            'dr. Budi Utomo',
+            'dr. Cahaya Hikari',
+            'dr. Dian Lestari',
+            'dr. Rahmat Higayat',
+            'dr. Denis Setiawan',
+            'dr. Arif Wijaya',
+            'dr. Fitri Handayani',
+            'dr. Senku',
+            'dr. Edi Santoso',
+            'dr. Susi Susanti',
+            'dr. Yanto',
+        ];
+
+        foreach ($dokterPoli as $i => $name) {
+            User::create([
+                'name' => $name,
+                'username' => 'dokter' . ($i + 1),
+                'password' => Hash::make('password'),
+                'role' => 'dokter',
+            ]);
+        }
     }
 }
