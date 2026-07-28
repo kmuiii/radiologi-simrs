@@ -59,7 +59,7 @@ new class extends Component
         $rules = [
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username' . ($this->editingId ? ",{$this->editingId}" : ''),
-            'role' => 'required|in:admin,radiologist',
+            'role' => 'required|in:admin,dokter,radiologist',
             'password' => $this->editingId ? 'nullable|min:8' : 'required|min:8',
         ];
 
@@ -162,6 +162,7 @@ new class extends Component
                     <flux:select.option value="">- Semua Role -</flux:select.option>
                     <flux:select.option value="admin">Admin</flux:select.option>
                     <flux:select.option value="radiologist">Dokter Radiologi</flux:select.option>
+                    <flux:select.option value="dokter">Dokter</flux:select.option>
                 </flux:select>
             </flux:field>
         </div>
@@ -192,8 +193,8 @@ new class extends Component
                         <flux:table.cell>{{ $user->name }}</flux:table.cell>
                         <flux:table.cell>{{ $user->username }}</flux:table.cell>
                         <flux:table.cell>
-                            <flux:badge variant="pill" :color="$user->role === 'admin' ? 'green' : 'yellow'">
-                                {{ $user->role === 'admin' ? 'Admin' : 'Dokter Radiologi' }}
+                            <flux:badge variant="pill" :color="$user->role_color">
+                                   {{ $user->role_label }}
                             </flux:badge>
                         </flux:table.cell>
                         <flux:table.cell>
@@ -243,6 +244,7 @@ new class extends Component
                 <flux:label>Role</flux:label>
                 <flux:select wire:model="role">
                     <flux:select.option value="radiologist">Dokter Radiologi</flux:select.option>
+                    <flux:select.option value="dokter">Dokter</flux:select.option>
                     <flux:select.option value="admin">Admin</flux:select.option>
                 </flux:select>
                 <flux:error name="role" />

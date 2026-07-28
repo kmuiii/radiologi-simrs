@@ -69,4 +69,26 @@ class User extends Authenticatable implements PasskeyUser
     {
         return $this->hasMany(RadiologyImage::class, 'uploaded_by');
     }
+
+    // role label
+    public function getRoleLabelAttribute(): string
+    {
+        return match ($this->role) {
+            'admin' => 'Admin',
+            'dokter' => 'Dokter',
+            'radiologist' => 'Dokter Radiologi',
+            default => ucfirst($this->role),
+        };
+    }
+
+    // role color
+    public function getRoleColorAttribute(): string
+    {
+        return match ($this->role) {
+            'admin' => 'green',
+            'dokter' => 'blue',
+            'radiologist' => 'yellow',
+            default => 'zinc',
+        };
+    }
 }
