@@ -6,8 +6,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Model;
+use Laravolt\Indonesia\Models\City;
+use Laravolt\Indonesia\Models\District;
+use Laravolt\Indonesia\Models\Province;
+use Laravolt\Indonesia\Models\Village;
 
-#[Fillable(['mrn', 'nik', 'name', 'gender', 'date_of_birth', 'address', 'phone'])]
+#[Fillable(['mrn', 'nik', 'name', 'gender', 'date_of_birth', 'address', 'phone',
+    'tempat_lahir', 'agama', 'suku', 'pekerjaan', 'bahasa', 'status_pernikahan',
+    'pendidikan', 'nama_ibu_kandung', 'rt', 'rw', 'kode_pos', 'negara',
+    'province_code', 'city_code', 'district_code', 'village_code',])]
 class Patient extends Model
 {
     use HasFactory;
@@ -34,6 +41,26 @@ class Patient extends Model
     protected $casts = [
         'date_of_birth' => 'date',
     ];
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class, 'province_code', 'code');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class, 'city_code', 'code');
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(District::class, 'district_code', 'code');
+    }
+
+    public function village()
+    {
+        return $this->belongsTo(Village::class, 'village_code', 'code');
+    }
 
     public function registrasi()
     {
