@@ -6,13 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Support\Str;
 
-#[Fillable(['no_order', 'tindakan_id','examination_type_id', 'radiologist_id', 'price', 'status'])]
+#[Fillable(['no_order', 'tindakan_id', 'examination_type_id', 'price', 'is_examined'])]
 class DetailTindakan extends Model
 {
 
     protected $table = 'detail_tindakan';
 
-    protected $casts = ['price' => 'decimal:2'];
+    protected $casts = [
+        'price'       => 'decimal:2',
+        'is_examined' => 'boolean',
+    ];
 
     protected static function booted()
     {
@@ -46,11 +49,6 @@ class DetailTindakan extends Model
         return $this->belongsTo(ExaminationType::class);
     }
 
-    public function radiologist()
-    {
-        return $this->belongsTo(User::class, 'radiologist_id');
-    }
-
     public function hasil()
     {
         return $this->hasOne(TindakanHasil::class);
@@ -59,25 +57,5 @@ class DetailTindakan extends Model
     public function images()
     {
         return $this->hasMany(RadiologyImage::class);
-    }
-
-    public function getStatusLabelAttribute(): string
-    {
-        return match ($this->status) {
-            'completed' => 'Selesai',
-            'in_progress' => 'Diproses',
-            'pending' => 'Menunggu',
-            default => 'pending',
-        };
-    }
-
-    public function getStatusColorAttribute(): string
-    {
-        return match ($this->status) {
-            'completed' => 'green',
-            'in_progress' => 'yellow',
-            'pending' => 'zinc',
-            default => 'zinc',
-        };
     }
 }
