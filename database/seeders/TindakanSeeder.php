@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Tindakan;
 use App\Models\JenisTindakan;
 use App\Models\Pelayanan;
+use App\Models\User;
 
 class TindakanSeeder extends Seeder
 {
@@ -42,6 +43,7 @@ class TindakanSeeder extends Seeder
         $pelayananList = Pelayanan::all();
         $radiologiId = JenisTindakan::where('name', 'Radiologi')->first()->id;  // Ambil ID jenis tindakan Radiologi
         $otherJenisIds = JenisTindakan::where('name', '!=', 'Radiologi')->pluck('id');  // Ambil semua jenis tindakan selain Radiologi
+        $radiologists = User::where('role', 'radiologist')->pluck('id');
 
         // pick 45 random pelayanan records from 70 for tindakan
         $selected = $pelayananList->random(45);
@@ -58,6 +60,8 @@ class TindakanSeeder extends Seeder
                 'jenis_tindakan_id' => $jenisTindakanId,
                 'referring_doctor_name' => collect($this->referringDoctors)->random(),
                 'clinical_notes' => collect($this->clinicalNotesSamples)->random(),
+                'dokter_pembaca_id' => $radiologists->random(),
+                'status' => collect(Tindakan::STATUSES)->random(),
             ]);
         }
     }

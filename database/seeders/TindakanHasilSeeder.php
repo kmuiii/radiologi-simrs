@@ -43,13 +43,6 @@ class TindakanHasilSeeder extends Seeder
                 'impression' => $this->impressionSamples[$idx],
                 'impression_source' => collect(['manual', 'ai_generated', 'ai_edited'])->random(),
             ]);
-
-            $detail->update(['status' => 'completed']); // update status detail_tindakan menjadi completed
         }
-
-        // update status detail_tindakan yang tidak dipilih menjadi pending atau in_progress
-        DetailTindakan::whereNotIn('id', $selected->pluck('id'))
-            ->get() // ambil semua detail_tindakan yang tidak dipilih
-            ->each(fn ($d) => $d->update(['status' => collect(['pending', 'in_progress'])->random()])); // update status menjadi pending atau in_progress secara acak
     }
 }

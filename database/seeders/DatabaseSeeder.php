@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             RadiologyImageSeeder::class,
             CpptSeeder::class,
             ReportMasterTemplateSeeder::class,
+            AiPromptSettingSeeder::class,
         ]);
     }
 }

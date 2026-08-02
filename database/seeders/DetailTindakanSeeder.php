@@ -40,9 +40,7 @@ class DetailTindakanSeeder extends Seeder
                 $created[] = DetailTindakan::create([
                     'tindakan_id' => $tindakan->id,
                     'examination_type_id' => $examType->id,
-                    'radiologist_id' => $radiologists->random(),
                     'price' => $examType->price,
-                    'status' => 'pending', // status default
                 ]);
             }
         }
