@@ -2,6 +2,7 @@
 
 use App\Concerns\PasswordValidationRules;
 use App\Livewire\Actions\Logout;
+use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -15,13 +16,7 @@ new class extends Component {
      */
     public function deleteUser(Logout $logout): void
     {
-        $this->validate([
-            'password' => $this->currentPasswordRules(),
-        ]);
-
-        tap(Auth::user(), $logout(...))->delete();
-
-        $this->redirect('/', navigate: true);
+        Flux::toast(variant: 'danger', text: __('Fitur hapus akun tidak diizinkan.'));
     }
 }; ?>
 
