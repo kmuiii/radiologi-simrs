@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 #[Fillable(['registrasi_id', 'pelayanan_id', 'patient_id', 'jenis_tindakan_id',
-    'referring_doctor_name', 'clinical_notes',
+    'referring_doctor_name', 'clinical_notes', 'no_order', 'tipe_order',
     'dokter_pembaca_id', 'operator_1_id', 'operator_2_id', 'operator_3_id', 'operator_4_id', 'operator_5_id',
     'status', 'tgl_datang', 'tgl_valid', 'tgl_periksa', 'tgl_selesai', 'tgl_serah', 'tanggal_jam_diterima', 'penerima', 'status_diterima'])]
 class Tindakan extends Model
@@ -20,6 +20,7 @@ class Tindakan extends Model
         'tanggal_jam_diterima' => 'datetime',
     ];
 
+    const TIPE_ORDER_OPTIONS = ['reguler', 'cito'];
     const STATUSES = ['order', 'datang', 'valid', 'proses', 'selesai', 'serah'];
     const STATUS_DITERIMA_OPTIONS = ['diterima', 'belum_diterima', 'konfirmasi'];
 
@@ -65,6 +66,24 @@ class Tindakan extends Model
 
     public function operator5() { 
         return $this->belongsTo(User::class, 'operator_5_id'); 
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($item) {
+            if (empty($item->no_order)) {
+                $item->no_order = static::generateNoOrder();
+            }
+        });
+    }
+
+    protected static function generateNoOrder(): string
+    {
+        do {
+            $candidate = 'ORD-' . now()->format('Ymd') . '-' . strtoupper(\Illuminate\Support\Str::random(5));
+        } while (static::where('no_order', $candidate)->exists());
+
+        return $candidate;
     }
 
 }

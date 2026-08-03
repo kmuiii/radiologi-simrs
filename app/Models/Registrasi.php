@@ -6,13 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Support\Str;
 
-#[Fillable(['patient_id', 'no_registrasi', 'tanggal_registrasi'])]
+#[Fillable(['patient_id', 'no_registrasi', 'tanggal_registrasi', 'alergi', 'penyakit_khusus', 'jenis_pasien', 'kelas_layanan', 'asal_pasien'])]
 class Registrasi extends Model
 {
     protected $table = 'registrasi';
 
     protected $casts = ['tanggal_registrasi' => 'datetime'];
 
+    const JENIS_PASIEN_OPTIONS = [
+        'Umum', 'SKTM', 'Prognas', 'Jasa Raharja', 'Program Keluarga Harapan (PKH)',
+        'Program DM-TB', 'BPJS - PBI/KIS', 'BPJS - Mandiri', 'BPJS - Askes/Pensiunan', 'Lain-lain',
+    ];
+
+    const KELAS_LAYANAN_OPTIONS = ['Kelas I', 'Kelas II', 'Kelas III', 'VIP'];
+
+    const ASAL_PASIEN_OPTIONS = [
+        'Datang Sendiri', 'Puskesmas', 'RS Pemerintah', 'RS Swasta',
+        'Dokter Praktik', 'Paramedis', 'Khusus Polisi', 'Lain-lain',
+    ];
+    
     protected static function booted()
     {
         static::creating(function ($item) {
