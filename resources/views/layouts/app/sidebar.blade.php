@@ -1,3 +1,4 @@
+@props(['title' => null])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
@@ -22,35 +23,30 @@
 
                     {{-- Master Data --}}
                     <flux:sidebar.group icon="folder" expandable heading="Master Data" class="grid">
-                        <flux:navlist.item href="{{ route('admin.master.patients.index') }}" :current="request()->routeIs('admin.master.patients.*')">
-                            Pasien
-                        </flux:navlist.item>
                         <flux:navlist.item href="{{ route('admin.master.examination-types.index') }}" :current="request()->routeIs('admin.master.examination-types.*')" wire:navigate>
-                            Tarif Tindakan
+                            Jenis Pemeriksaan
                         </flux:navlist.item>
-                        <flux:navlist.item href="{{ route('admin.master.report-templates.index') }}" :current="request()->routeIs('admin.master.report-templates.*')">
-                            Template
-                        </flux:navlist.item>
-                        <flux:navlist.item href="{{ route('admin.master.master-poli.index') }}" :current="request()->routeIs('admin.master-poli.*')">
+                        <flux:navlist.item href="{{ route('admin.master.master-poli.index') }}" :current="request()->routeIs('admin.master.master-poli.*')" wire:navigate>
                             Master Poli
                         </flux:navlist.item>
-                        <flux:navlist.item href="{{ route('admin.master.jenis-tindakan.index') }}" :current="request()->routeIs('admin.master.jenis-tindakan.*')">
-                            Jenis Tindakan
+                        <flux:navlist.item href="{{ route('admin.master.report-master-templates.index') }}" :current="request()->routeIs('admin.master.report-master-templates.*')" wire:navigate>
+                            Master Template
                         </flux:navlist.item>
                     </flux:sidebar.group>
 
                     {{-- Pendaftaran --}}
                     <flux:sidebar.group icon="inbox-stack" expandable heading="Pendaftaran" class="grid">
-                        <flux:navlist.item href="{{ route('admin.pendaftaran.registrasi.index') }}" :current="request()->routeIs('admin.pendaftaran.registrasi.*')">
+                        <flux:navlist.item href="{{ route('admin.pendaftaran.registrasi.index') }}" :current="request()->routeIs('admin.pendaftaran.registrasi.*')" wire:navigate>
                             Registrasi
                         </flux:navlist.item>
-                        <flux:navlist.item href="{{ route('admin.pendaftaran.pelayanan.index') }}" :current="request()->routeIs('admin.pendaftaran.pelayanan.*')">
+                        <flux:navlist.item href="{{ route('admin.pendaftaran.tindakan.index') }}" :current="request()->routeIs('admin.pendaftaran.tindakan.*')" wire:navigate>
                             Pelayanan
                         </flux:navlist.item>
-                        <flux:navlist.item href="{{ route('admin.pendaftaran.tindakan.index') }}" :current="request()->routeIs('admin.pendaftaran.tindakan.*')">
-                            Tindakan
-                        </flux:navlist.item>
-                    </flux:navlist.group>
+                    </flux:sidebar.group>
+
+                    <flux:navlist.item icon="wrench-screwdriver" href="{{ route('admin.configuration.index') }}" :current="request()->routeIs('admin.configuration.*')" wire:navigate>
+                        Configuration
+                    </flux:navlist.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 
