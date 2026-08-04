@@ -2,34 +2,30 @@
 
 namespace App\Policies;
 
-use App\Models\DetailTindakan;
+use App\Models\Tindakan;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class DetailTindakanPolicy
+class TindakanPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'radiologist']);
+        return false;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, DetailTindakan $detailTindakan): bool
+    public function view(User $user, Tindakan $tindakan): bool
     {
         if ($user->role === 'admin') {
             return true;
         }
 
-        // Dokter hanya bisa akses yang ditugaskan ke dirinya.
-        // Otomatis mencakup Detail Tindakan yang ia buat sendiri,
-        // karena radiologist_id di-set ke dirinya saat pembuatan.
-        return $user->role === 'radiologist'
-            && $detailTindakan->radiologist_id === $user->id;
+        return $user->role === 'radiologist' && $tindakan->dokter_pembaca_id === $user->id;
     }
 
     /**
@@ -37,22 +33,21 @@ class DetailTindakanPolicy
      */
     public function create(User $user): bool
     {
-        // Admin dan Dokter Radiologi sama-sama boleh membuat
         return in_array($user->role, ['admin', 'radiologist']);
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, DetailTindakan $detailTindakan): bool
+    public function update(User $user, Tindakan $tindakan): bool
     {
-        return $this->view($user, $detailTindakan);
+        return false;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, DetailTindakan $detailTindakan): bool
+    public function delete(User $user, Tindakan $tindakan): bool
     {
         return false;
     }
@@ -60,7 +55,7 @@ class DetailTindakanPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, DetailTindakan $detailTindakan): bool
+    public function restore(User $user, Tindakan $tindakan): bool
     {
         return false;
     }
@@ -68,7 +63,7 @@ class DetailTindakanPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, DetailTindakan $detailTindakan): bool
+    public function forceDelete(User $user, Tindakan $tindakan): bool
     {
         return false;
     }
