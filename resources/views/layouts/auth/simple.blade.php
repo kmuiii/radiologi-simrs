@@ -4,16 +4,33 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white antialiased dark:bg-linear-to-b dark:from-neutral-950 dark:to-neutral-900">
-        <div class="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
-            <div class="flex w-full max-w-sm flex-col gap-2">
-                <a href="{{ route('home') }}" class="flex flex-col items-center gap-2 font-medium" wire:navigate>
-                    <span class="flex h-9 w-9 mb-1 items-center justify-center rounded-md">
-                        <x-app-logo-icon class="size-9 fill-current text-black dark:text-white" />
-                    </span>
-                    <span class="sr-only">{{ config('app.name', 'Laravel') }}</span>
-                </a>
-                <div class="flex flex-col gap-6">
+    <body class="auth-bg antialiased relative overflow-x-hidden">
+
+        {{-- Decorative blobs — respond to dark mode via CSS --}}
+        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0" aria-hidden="true">
+            <div class="blob-blue"></div>
+            <div class="blob-orange"></div>
+        </div>
+
+        {{-- Floating theme switcher — top-right corner --}}
+        <div class="fixed top-4 right-4 z-50" x-data>
+            <flux:button
+                variant="subtle"
+                size="sm"
+                icon-only
+                x-on:click="$flux.appearance = ($flux.appearance === 'dark' || ($flux.appearance === 'system' && $flux.dark)) ? 'light' : 'dark'"
+                x-tooltip.raw="Toggle theme"
+                class="rounded-lg bg-white/80 dark:bg-zinc-800/80 backdrop-blur border border-zinc-200 dark:border-zinc-700 shadow-sm"
+            >
+                <x-heroicon-o-sun   class="size-4 text-zinc-600 dark:hidden" />
+                <x-heroicon-o-moon  class="size-4 text-zinc-300 hidden dark:block" />
+            </flux:button>
+        </div>
+
+        {{-- Centered content --}}
+        <div class="relative z-10 flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
+            <div class="w-full max-w-sm md:max-w-[460px]">
+                <div class="glass-card px-8 py-10 md:px-10 md:py-12">
                     {{ $slot }}
                 </div>
             </div>

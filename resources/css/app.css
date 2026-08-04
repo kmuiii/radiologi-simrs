@@ -51,6 +51,131 @@
     }
 }
 
+/* ── App background: light & dark ──────────────────────────────────── */
+.app-bg {
+    background-color: #ffffff;
+    background-image:
+        radial-gradient(circle at top center, rgba(219, 234, 254, 0.70) 0%, transparent 30%),
+        radial-gradient(circle at bottom right, rgba(251, 191, 36, 0.08) 0%, transparent 30%);
+}
+
+.dark .app-bg {
+    background-color: #09090b;
+    /* zinc-950 */
+    background-image:
+        radial-gradient(circle at top center, rgba(30, 58, 138, 0.22) 0%, transparent 40%),
+        radial-gradient(circle at bottom right, rgba(120, 53, 15, 0.12) 0%, transparent 40%);
+}
+
+/* ───────────────────────────────────────────────────────────────────── */
+
+/* ── Auth page background ───────────────────────────────────────────── */
+.auth-bg {
+    min-height: 100svh;
+    background-color: #ffffff;
+    background-image: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(186, 230, 253, 0.45) 0%, transparent 70%);
+}
+
+.dark .auth-bg {
+    background-color: #09090b;
+    /* zinc-950 */
+    background-image: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(30, 58, 138, 0.30) 0%, transparent 70%);
+}
+
+/* Auth decorative blobs — light mode */
+.blob-blue {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-75%, -70%);
+    width: 32rem;
+    height: 32rem;
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.25) 0%, rgba(56, 189, 248, 0.1) 50%, transparent 70%);
+    filter: blur(64px);
+    pointer-events: none;
+}
+
+.blob-orange {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-25%, -30%);
+    width: 28rem;
+    height: 28rem;
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(249, 115, 22, 0.18) 0%, rgba(253, 186, 116, 0.08) 50%, transparent 70%);
+    filter: blur(64px);
+    pointer-events: none;
+}
+
+/* Dark mode blobs — navy + amber */
+.dark .blob-blue {
+    background: radial-gradient(circle, rgba(30, 58, 138, 0.35) 0%, rgba(37, 99, 235, 0.15) 50%, transparent 70%);
+}
+
+.dark .blob-orange {
+    background: radial-gradient(circle, rgba(120, 53, 15, 0.25) 0%, rgba(146, 64, 14, 0.10) 50%, transparent 70%);
+}
+
+/* Auth glass card — light mode */
+.glass-card {
+    background: rgba(255, 255, 255, 0.60);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 1.75rem;
+    box-shadow:
+        0 10px 40px rgba(14, 165, 233, 0.06),
+        0 2px 10px rgba(0, 0, 0, 0.03),
+        inset 0 1px 0 rgba(255, 255, 255, 0.80);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Dark mode glass card */
+.dark .glass-card {
+    background: rgba(24, 24, 27, 0.70);
+    /* zinc-900 at 70% */
+    border: 1px solid rgba(63, 63, 70, 0.60);
+    /* zinc-700 at 60% */
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.30),
+        0 2px 10px rgba(0, 0, 0, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Card inner highlight overlay */
+.glass-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.35) 0%,
+            rgba(255, 255, 255, 0.04) 50%,
+            transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+    border-radius: inherit;
+}
+
+.dark h1 {
+    color: white;
+}
+
+.dark .glass-card::before {
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.04) 0%,
+            transparent 60%);
+}
+
+.glass-card>* {
+    position: relative;
+    z-index: 1;
+}
+
+/* ───────────────────────────────────────────────────────────────────── */
+
 [data-flux-field]:not(ui-radio, ui-checkbox) {
     @apply grid gap-2;
 }

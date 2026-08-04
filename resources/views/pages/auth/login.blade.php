@@ -1,43 +1,99 @@
 <x-layouts::auth :title="__('Log in')">
-    <div class="flex flex-col gap-6">
-        <x-auth-header :title="__('Log in to your account')" :description="__('Enter your email and password below to log in')" />
+    <div class="flex flex-col gap-7">
 
-        <!-- Session Status -->
-        <x-auth-session-status class="text-center" :status="session('status')" />
+        {{-- ── Brand Header ── --}}
+        <div class="flex flex-col items-center gap-3 text-center">
+            <a href="{{ route('home') }}" wire:navigate class="group">
+                <span class="flex h-16 w-16 items-center justify-center rounded-2xl transition-transform duration-200 group-hover:scale-105">
+                    <x-app-logo-icon class="size-9 fill-current text-white" />
+                </span>
+            </a>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-gray-800">RS Techno Medic</h1>
+                <p class="mt-0.5 text-sm font-medium tracking-wide text-sky-600/80">Radiology Information System</p>
+            </div>
+        </div>
 
-        <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
+        {{-- ── Divider ── --}}
+        <div class="h-px w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+
+        {{-- ── Session Status ── --}}
+        @if (session('status'))
+            <div class="rounded-xl bg-blue-50 px-4 py-3 text-center text-sm text-blue-700 ring-1 ring-blue-200">
+                {{ session('status') }}
+            </div>
+        @endif
+
+        {{-- ── Login Form ── --}}
+        <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-5">
             @csrf
 
-            <!-- Email Address -->
-            <flux:input wire:model="username" label="Username" type="text" />
+            {{-- Username --}}
+            <div class="flex flex-col gap-1.5">
+                <flux:input
+                    name="username"
+                    label="{{ __('Username') }}"
+                    type="text"
+                    required
+                    autofocus
+                    autocomplete="username"
+                    placeholder="{{ __('Masukkan username Anda') }}"
+                    class="w-full"
+                />
+            </div>
 
-            <!-- Password -->
-            <div class="relative">
+            {{-- Password --}}
+            <div class="flex flex-col gap-1.5">
+                <div class="flex items-center justify-between">
+                    <flux:label>{{ __('Password') }}</flux:label>
+                    @if (Route::has('password.request'))
+                        <flux:link
+                            :href="route('password.request')"
+                            wire:navigate
+                            class="text-xs font-medium text-sky-600 hover:text-sky-700 transition-colors"
+                        >
+                            {{ __('Lupa password?') }}
+                        </flux:link>
+                    @endif
+                </div>
                 <flux:input
                     name="password"
-                    :label="__('Password')"
                     type="password"
                     required
                     autocomplete="current-password"
-                    :placeholder="__('Password')"
+                    placeholder="{{ __('Masukkan password Anda') }}"
                     viewable
+                    class="w-full"
                 />
-
-                @if (Route::has('password.request'))
-                    <flux:link class="absolute top-0 text-sm end-0" :href="route('password.request')" wire:navigate>
-                        {{ __('Forgot your password?') }}
-                    </flux:link>
-                @endif
             </div>
 
-            <!-- Remember Me -->
-            <flux:checkbox name="remember" :label="__('Remember me')" :checked="old('remember')" />
+            {{-- Remember Me --}}
+            <flux:accent color="blue">
+                <flux:checkbox
+                    name="remember"
+                    :label="__('Ingat saya di perangkat ini')"
+                    :checked="old('remember')"
+                />
+            </flux:accent>
 
-            <div class="flex items-center justify-end">
-                <flux:button variant="primary" type="submit" class="w-full" data-test="login-button" color="blue">
-                    {{ __('Log in') }}
+            {{-- Submit --}}
+            <div class="pt-1">
+                <flux:button
+                    variant="primary"
+                    type="submit"
+                    class="w-full"
+                    data-test="login-button"
+                    color="blue"
+                >
+                    {{ __('Masuk') }}
                 </flux:button>
             </div>
         </form>
+
+        {{-- ── Footer Note ── --}}
+        <p class="text-center text-xs text-gray-400">
+            &copy; {{ date('Y') }} RS Techno Medic &mdash; All rights reserved
+        </p>
+
     </div>
 </x-layouts::auth>
