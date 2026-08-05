@@ -13,7 +13,7 @@ class TindakanPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return in_array($user->role, ['admin', 'radiologist']);
     }
 
     /**
@@ -21,11 +21,7 @@ class TindakanPolicy
      */
     public function view(User $user, Tindakan $tindakan): bool
     {
-        if ($user->role === 'admin') {
-            return true;
-        }
-
-        return $user->role === 'radiologist' && $tindakan->dokter_pembaca_id === $user->id;
+        return in_array($user->role, ['admin', 'radiologist']);
     }
 
     /**
@@ -41,7 +37,7 @@ class TindakanPolicy
      */
     public function update(User $user, Tindakan $tindakan): bool
     {
-        return false;
+        return in_array($user->role, ['admin', 'radiologist']);
     }
 
     /**
@@ -49,7 +45,7 @@ class TindakanPolicy
      */
     public function delete(User $user, Tindakan $tindakan): bool
     {
-        return false;
+        return in_array($user->role, ['admin', 'radiologist']);
     }
 
     /**
