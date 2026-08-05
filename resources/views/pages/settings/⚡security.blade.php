@@ -171,46 +171,60 @@ new #[Title('Security settings')] class extends Component {
 
     <flux:heading class="sr-only">{{ __('Security settings') }}</flux:heading>
 
-    <x-pages::settings.layout :heading="__('Update password')" :subheading="__('Ensure your account is using a long, random password to stay secure')">
-        <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
-            <flux:input
-                wire:model="current_password"
-                :label="__('Current password')"
-                type="password"
-                required
-                autocomplete="current-password"
-                viewable
-            />
-            <flux:input
-                wire:model="password"
-                :label="__('New password')"
-                type="password"
-                required
-                autocomplete="new-password"
-                passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
-                viewable
-            />
-            <flux:input
-                wire:model="password_confirmation"
-                :label="__('Confirm password')"
-                type="password"
-                required
-                autocomplete="new-password"
-                passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
-                viewable
-            />
+    <x-pages::settings.layout :heading="__('Security')" :subheading="__('Manage your password, two-factor authentication, and passkeys')">
+        
+        {{-- Section 1: Update Password (Only for Admin) --}}
+        @if(auth()->user()->role === 'admin')
+            <section class="mb-10">
+                <flux:heading size="lg" class="mb-1">{{ __('Update password') }}</flux:heading>
+                <flux:subheading class="mb-6">{{ __('Ensure your account is using a long, random password to stay secure') }}</flux:subheading>
+                
+                <form method="POST" wire:submit="updatePassword" class="space-y-6">
+                    <flux:input
+                        wire:model="current_password"
+                        :label="__('Current password')"
+                        type="password"
+                        required
+                        autocomplete="current-password"
+                        viewable
+                    />
+                    <flux:input
+                        wire:model="password"
+                        :label="__('New password')"
+                        type="password"
+                        required
+                        autocomplete="new-password"
+                        passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
+                        viewable
+                    />
+                    <flux:input
+                        wire:model="password_confirmation"
+                        :label="__('Confirm password')"
+                        type="password"
+                        required
+                        autocomplete="new-password"
+                        passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
+                        viewable
+                    />
 
-            <div class="flex items-center gap-4">
-                <flux:button variant="primary" type="submit" data-test="update-password-button" color="blue">
-                    {{ __('Save') }}
-                </flux:button>
-            </div>
-        </form>
+                    <div class="flex items-center gap-4">
+                        <flux:button variant="primary" type="submit" data-test="update-password-button" color="blue">
+                            {{ __('Save') }}
+                        </flux:button>
+                    </div>
+                </form>
+            </section>
 
+            @if ($canManageTwoFactor || $canManagePasskeys)
+                <flux:separator class="my-10" />
+            @endif
+        @endif
+
+        {{-- Section 2: Two-Factor Authentication --}}
         @if ($canManageTwoFactor)
-            <section class="mt-12">
-                <flux:heading>{{ __('Two-factor authentication') }}</flux:heading>
-                <flux:subheading>{{ __('Manage your two-factor authentication settings') }}</flux:subheading>
+            <section class="{{ $canManagePasskeys ? 'mb-10' : '' }}">
+                <flux:heading size="lg" class="mb-1">{{ __('Two-factor authentication') }}</flux:heading>
+                <flux:subheading class="mb-6">{{ __('Manage your two-factor authentication settings') }}</flux:subheading>
 
                 <div class="flex flex-col w-full mx-auto space-y-6 text-sm" wire:cloak>
                     @if ($twoFactorEnabled)
@@ -250,14 +264,19 @@ new #[Title('Security settings')] class extends Component {
                     @endif
                 </div>
             </section>
+
+            @if ($canManagePasskeys)
+                <flux:separator class="my-10" />
+            @endif
         @endif
 
+        {{-- Section 3: Passkeys --}}
         @if ($canManagePasskeys)
-            <section class="mt-12">
-                <flux:heading>{{ __('Passkeys') }}</flux:heading>
-                <flux:subheading>{{ __('Manage your passkeys for passwordless sign-in') }}</flux:subheading>
+            <section>
+                <flux:heading size="lg" class="mb-1">{{ __('Passkeys') }}</flux:heading>
+                <flux:subheading class="mb-6">{{ __('Manage your passkeys for passwordless sign-in') }}</flux:subheading>
 
-                <div class="mt-6 flex flex-col w-full mx-auto space-y-6 text-sm" wire:cloak>
+                <div class="flex flex-col w-full mx-auto space-y-6 text-sm" wire:cloak>
                     <div class="border rounded-lg border-zinc-200 dark:border-zinc-700 overflow-hidden">
                         @forelse ($passkeys as $passkey)
                             <div class="flex items-center justify-between p-4 {{ ! $loop->last ? 'border-b border-zinc-200 dark:border-zinc-700' : '' }}">

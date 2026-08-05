@@ -13,41 +13,54 @@
 
             
             <flux:sidebar.nav>
-                <flux:sidebar.group :heading="__('Radiologi')" class="grid">
-                    <flux:navlist.item icon="home" href="{{ route('admin.dashboard') }}" :current="request()->routeIs('admin.dashboard')" wire:navigate>
-                        Dashboard
-                    </flux:navlist.item>
-                    <flux:navlist.item icon="users" href="{{ route('admin.users.index') }}" :current="request()->routeIs('admin.users.*')" wire:navigate>
-                        Users
-                    </flux:navlist.item>
+                @if(auth()->user()?->role === 'admin')
+                    {{-- ── Admin Navigation ── --}}
+                    <flux:sidebar.group :heading="__('Radiologi')" class="grid">
+                        <flux:navlist.item icon="home" href="{{ route('admin.dashboard') }}" :current="request()->routeIs('admin.dashboard')" wire:navigate>
+                            Dashboard
+                        </flux:navlist.item>
+                        <flux:navlist.item icon="users" href="{{ route('admin.users.index') }}" :current="request()->routeIs('admin.users.*')" wire:navigate>
+                            Users
+                        </flux:navlist.item>
 
-                    {{-- Master Data --}}
-                    <flux:sidebar.group icon="folder" expandable heading="Master Data" class="grid">
-                        <flux:navlist.item href="{{ route('admin.master.examination-types.index') }}" :current="request()->routeIs('admin.master.examination-types.*')" wire:navigate>
-                            Jenis Pemeriksaan
-                        </flux:navlist.item>
-                        <flux:navlist.item href="{{ route('admin.master.master-poli.index') }}" :current="request()->routeIs('admin.master.master-poli.*')" wire:navigate>
-                            Master Poli
-                        </flux:navlist.item>
-                        <flux:navlist.item href="{{ route('admin.master.report-master-templates.index') }}" :current="request()->routeIs('admin.master.report-master-templates.*')" wire:navigate>
-                            Master Template
+                        {{-- Master Data --}}
+                        <flux:sidebar.group icon="folder" expandable heading="Master Data" class="grid">
+                            <flux:navlist.item href="{{ route('admin.master.examination-types.index') }}" :current="request()->routeIs('admin.master.examination-types.*')" wire:navigate>
+                                Jenis Pemeriksaan
+                            </flux:navlist.item>
+                            <flux:navlist.item href="{{ route('admin.master.master-poli.index') }}" :current="request()->routeIs('admin.master.master-poli.*')" wire:navigate>
+                                Master Poli
+                            </flux:navlist.item>
+                            <flux:navlist.item href="{{ route('admin.master.report-master-templates.index') }}" :current="request()->routeIs('admin.master.report-master-templates.*')" wire:navigate>
+                                Master Template
+                            </flux:navlist.item>
+                        </flux:sidebar.group>
+
+                        {{-- Pendaftaran --}}
+                        <flux:sidebar.group icon="inbox-stack" expandable heading="Pendaftaran" class="grid">
+                            <flux:navlist.item href="{{ route('admin.pendaftaran.registrasi.index') }}" :current="request()->routeIs('admin.pendaftaran.registrasi.*')" wire:navigate>
+                                Registrasi
+                            </flux:navlist.item>
+                            <flux:navlist.item href="{{ route('admin.pendaftaran.tindakan.index') }}" :current="request()->routeIs('admin.pendaftaran.tindakan.*')" wire:navigate>
+                                Pelayanan
+                            </flux:navlist.item>
+                        </flux:sidebar.group>
+
+                        <flux:navlist.item icon="wrench-screwdriver" href="{{ route('admin.configuration.index') }}" :current="request()->routeIs('admin.configuration.*')" wire:navigate>
+                            Configuration
                         </flux:navlist.item>
                     </flux:sidebar.group>
-
-                    {{-- Pendaftaran --}}
-                    <flux:sidebar.group icon="inbox-stack" expandable heading="Pendaftaran" class="grid">
-                        <flux:navlist.item href="{{ route('admin.pendaftaran.registrasi.index') }}" :current="request()->routeIs('admin.pendaftaran.registrasi.*')" wire:navigate>
-                            Registrasi
+                @elseif(auth()->user()?->role === 'radiologist')
+                    {{-- ── Radiologist Navigation ── --}}
+                    <flux:sidebar.group :heading="__('Radiologi')" class="grid">
+                        <flux:navlist.item icon="home" href="{{ route('radiology.dashboard') }}" :current="request()->routeIs('radiology.dashboard')" wire:navigate>
+                            Dashboard
                         </flux:navlist.item>
-                        <flux:navlist.item href="{{ route('admin.pendaftaran.tindakan.index') }}" :current="request()->routeIs('admin.pendaftaran.tindakan.*')" wire:navigate>
+                        <flux:navlist.item icon="computer-desktop" href="{{ route('radiology.tindakan.index') }}" :current="request()->routeIs('radiology.tindakan.*') || request()->routeIs('radiology.pemeriksaan.*')" wire:navigate>
                             Pelayanan
                         </flux:navlist.item>
                     </flux:sidebar.group>
-
-                    <flux:navlist.item icon="wrench-screwdriver" href="{{ route('admin.configuration.index') }}" :current="request()->routeIs('admin.configuration.*')" wire:navigate>
-                        Configuration
-                    </flux:navlist.item>
-                </flux:sidebar.group>
+                @endif
             </flux:sidebar.nav>
 
             <flux:spacer />
