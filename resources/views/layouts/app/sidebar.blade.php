@@ -13,7 +13,8 @@
 
             
             <flux:sidebar.nav>
-                @if(auth()->user()?->role === 'admin')
+                @php $role = auth()->user()?->role; @endphp
+                @if($role === 'admin')
                     {{-- ── Admin Navigation ── --}}
                     <flux:sidebar.group :heading="__('Radiologi')" class="grid">
                         <flux:navlist.item icon="home" href="{{ route('admin.dashboard') }}" :current="request()->routeIs('admin.dashboard')" wire:navigate>
@@ -50,7 +51,7 @@
                             Configuration
                         </flux:navlist.item>
                     </flux:sidebar.group>
-                @elseif(auth()->user()?->role === 'radiologist')
+                @elseif($role === 'radiologist')
                     {{-- ── Radiologist Navigation ── --}}
                     <flux:sidebar.group :heading="__('Radiologi')" class="grid">
                         <flux:navlist.item icon="home" href="{{ route('radiology.dashboard') }}" :current="request()->routeIs('radiology.dashboard')" wire:navigate>
