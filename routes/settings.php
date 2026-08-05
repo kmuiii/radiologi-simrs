@@ -14,6 +14,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('settings/security', 'pages::settings.security')
         ->middleware([
             'password.confirm',
+            'role:admin',
         ])
         ->name('security.edit');
 });
