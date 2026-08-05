@@ -72,6 +72,9 @@ new class extends Component
 
         // Card 1: Total Pemeriksaan (semua Tindakan)
         $totalTindakan = Tindakan::count();
+        $tindakanThisMonth = Tindakan::whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->count();
+        $tindakanLastMonth = Tindakan::whereMonth('created_at', now()->subMonth()->month)->whereYear('created_at', now()->subMonth()->year)->count();
+        $diffTotalTindakan = $tindakanThisMonth - $tindakanLastMonth;
 
         // Card 2: Pemeriksaan Hari Ini
         $pemeriksaanHariIni = Tindakan::whereDate('created_at', today())->count();
@@ -89,6 +92,7 @@ new class extends Component
 
         return [
             'totalTindakan'          => $totalTindakan,
+            'diffTotalTindakan'      => $diffTotalTindakan,
             'pemeriksaanHariIni'     => $pemeriksaanHariIni,
             'diffPemeriksaan'        => $diffPemeriksaan,
             'pendingCount'           => $pendingCount,
@@ -112,21 +116,27 @@ new class extends Component
     {{-- ── Summary Cards ── --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
-        {{-- Card 1: Total Pemeriksaan --}}
+        {{-- Card 1: Total Tindakan Radiologi --}}
         <flux:card style="border-left: 3px solid #408BFF;" class="flex flex-col justify-between">
             <div>
-                <flux:subheading>Total Pemeriksaan</flux:subheading>
+                <flux:subheading>Total Tindakan Radiologi</flux:subheading>
                 <flux:heading size="xl" class="mt-1">{{ number_format($totalTindakan, 0, ',', '.') }}</flux:heading>
             </div>
             <div class="mt-3 text-xs text-zinc-500 dark:text-zinc-400">
-                <span>Seluruh data pemeriksaan</span>
+                @if($diffTotalTindakan > 0)
+                    <span class="text-emerald-600 dark:text-emerald-400 font-medium">+{{ $diffTotalTindakan }} dibanding bulan lalu</span>
+                @elseif($diffTotalTindakan < 0)
+                    <span class="text-rose-600 dark:text-rose-400 font-medium">{{ $diffTotalTindakan }} dibanding bulan lalu</span>
+                @else
+                    <span>Sama dengan bulan lalu</span>
+                @endif
             </div>
         </flux:card>
 
-        {{-- Card 2: Pemeriksaan Hari Ini --}}
+        {{-- Card 2: Tindakan Hari Ini --}}
         <flux:card style="border-left: 3px solid #408BFF;" class="flex flex-col justify-between">
             <div>
-                <flux:subheading>Pemeriksaan Hari Ini</flux:subheading>
+                <flux:subheading>Tindakan Hari Ini</flux:subheading>
                 <flux:heading size="xl" class="mt-1">{{ number_format($pemeriksaanHariIni, 0, ',', '.') }}</flux:heading>
             </div>
             <div class="mt-3 text-xs text-zinc-500 dark:text-zinc-400">
