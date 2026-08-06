@@ -29,6 +29,26 @@ class FortifyServiceProvider extends ServiceProvider
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();
+
+        \Laravel\Fortify\Fortify::authenticateUsing(function (Request $request) {
+            $request->validate([
+                'username' => 'required|string',
+                'password' => 'required|string',
+            ]);
+
+            $user = \App\Models\User::where('username', $request->username)->first();
+
+            if (! $user || ! \Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
+                // Flash both username and password to the session old input so they are not reset
+                session()->flashInput($request->only('username', 'password'));
+
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'username' => [__('Username atau password salah / tidak terdaftar.')],
+                ]);
+            }
+
+            return $user;
+        });
     }
 
     /**

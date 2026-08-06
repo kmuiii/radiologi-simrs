@@ -33,6 +33,7 @@
                 <flux:input
                     name="username"
                     label="{{ __('Username') }}"
+                    :value="old('username')"
                     type="text"
                     required
                     autofocus
@@ -58,6 +59,7 @@
                 </div>
                 <flux:input
                     name="password"
+                    :value="old('password')"
                     type="password"
                     required
                     autocomplete="current-password"
