@@ -157,6 +157,26 @@ new class extends Component
         $this->dispatch('open-review-modal', detailId: $detailId);
     }
 
+    public function updated($property, $value): void
+    {
+        if (str_starts_with($property, 'rows.') && str_ends_with($property, '.impression')) {
+            $parts = explode('.', $property);
+            if (isset($parts[1])) {
+                $detailId = (int) $parts[1];
+
+                if (blank($value)) {
+                    $this->rows[$detailId]['impression_source'] = 'manual';
+                    return;
+                }
+
+                $currentSource = $this->rows[$detailId]['impression_source'] ?? 'manual';
+                if ($currentSource === 'ai_generated') {
+                    $this->rows[$detailId]['impression_source'] = 'ai_edited';
+                }
+            }
+        }
+    }
+
     /**
      * Hook Livewire yang mendeteksi perubahan pada property singleImageUpload.
      * Dipanggil secara otomatis ketika file selesai terunggah sepenuhnya ke server.
@@ -601,14 +621,22 @@ new class extends Component
                                         </flux:button>
 
                                         @php
-                                            $isAi = ($rows[$detail->id]['impression_source'] ?? 'manual') === 'ai_generated';
+                                            $source = $rows[$detail->id]['impression_source'] ?? 'manual';
                                         @endphp
                                         <flux:badge
                                             variant="pill"
-                                            :color="$isAi ? 'purple' : 'zinc'"
+                                            :color="match($source) {
+                                                'ai_generated' => 'purple',
+                                                'ai_edited'    => 'indigo',
+                                                default        => 'zinc',
+                                            }"
                                             size="sm"
                                         >
-                                            {{ $isAi ? 'AI Generated' : 'Manual' }}
+                                            {{ match($source) {
+                                                'ai_generated' => 'AI Generated',
+                                                'ai_edited'    => 'AI Edited',
+                                                default        => 'Manual',
+                                            } }}
                                         </flux:badge>
                                     </div>
                                 </div>
@@ -733,6 +761,7 @@ new class extends Component
                             <span class="text-sm font-medium text-zinc-600 dark:text-zinc-400 w-28 shrink-0">{{ $label }}</span>
                             <input
                                 type="datetime-local"
+                                max="{{ date('Y-m-d\TH:i') }}"
                                 wire:model="{{ $prop }}"
                                 class="flex-1 max-w-[220px] text-sm border border-zinc-300 dark:border-zinc-700 rounded-lg px-2.5 py-1.5 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
                             />
