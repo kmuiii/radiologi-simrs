@@ -375,7 +375,7 @@ new class extends Component
 
                 <flux:field>
                     <flux:label badge="Requiered">Tanggal Lahir</flux:label>
-                    <flux:input type="date" wire:model="dateOfBirth" :disabled="$statusPasien === 'lama'" />
+                    <flux:input type="date" max="{{ date('Y-m-d') }}" wire:model="dateOfBirth" :disabled="$statusPasien === 'lama'" />
                     <flux:error name="dateOfBirth" />
                 </flux:field>
 
@@ -587,7 +587,7 @@ new class extends Component
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <flux:field>
                     <flux:label>Tgl. Registrasi</flux:label>
-                    <flux:input type="date" wire:model="tanggalRegistrasi" />
+                    <flux:input type="date" max="{{ date('Y-m-d') }}" wire:model="tanggalRegistrasi" />
                     <flux:error name="tanggalRegistrasi" />
                 </flux:field>
 

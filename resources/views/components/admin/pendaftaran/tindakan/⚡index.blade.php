@@ -777,7 +777,7 @@ new class extends Component
                                     Tanggal Lahir <span class="text-rose-500">*</span>
                                 </td>
                                 <td class="py-2.5 px-2 align-middle">
-                                    <flux:input type="date" wire:model.live="dlDateOfBirth" size="sm" class="w-full" />
+                                    <flux:input type="date" max="{{ date('Y-m-d') }}" wire:model.live="dlDateOfBirth" size="sm" class="w-full" />
                                 </td>
                                 {{-- Kolom 3: Umur (Thn, Bln, Hr) --}}
                                 <td class="py-2.5 pl-4 align-middle">
