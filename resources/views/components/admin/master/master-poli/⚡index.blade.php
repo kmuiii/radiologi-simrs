@@ -30,6 +30,12 @@ new class extends Component
         }
     }
 
+    public function resetFilter(): void
+    {
+        $this->reset('search');
+        $this->resetPage();
+    }
+
     public function openCreateModal(): void
     {
         $this->reset(['editingId', 'name', 'code']);
@@ -133,10 +139,13 @@ new class extends Component
     </div>
 
     <flux:card>
-        <div class="flex flex-wrap items-end gap-4 mb-4">
+        <div class="flex items-end gap-2 mb-4">
             <flux:field class="flex-1 max-w-sm">
                 <flux:label>Cari</flux:label>
                 <flux:input wire:model.live.debounce.400ms="search" placeholder="Nama atau kode..." icon="magnifying-glass" />
+            </flux:field>
+            <flux:field>
+                <flux:button variant="ghost" icon="x-mark" wire:click="resetFilter">Batal</flux:button>
             </flux:field>
         </div>
 
