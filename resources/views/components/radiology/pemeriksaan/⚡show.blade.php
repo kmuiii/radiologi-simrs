@@ -144,13 +144,28 @@ new class extends Component
 
         $detail = DetailTindakan::with('examinationType.reportTemplates')->findOrFail($detailId);
         $template = $detail->examinationType->reportTemplates()->where('is_default', true)->first();
-        $sections = $template->template_content['sections'] ?? [];
 
-        $missing = collect($sections)->filter(fn ($s) => stripos($findings, $s) === false)->values();
+        if ($template) {
+            $sections = $template->template_content['sections'] ?? [];
+            $missing = collect($sections)->filter(fn ($s) => stripos($findings, $s) === false)->values();
+
+            $completeness = [
+                'available' => true,
+                'passed'    => $missing->isEmpty(),
+                'missing'   => $missing->toArray(),
+            ];
+        } else {
+            $completeness = [
+                'available' => false,
+                'passed'    => null,
+                'missing'   => [],
+            ];
+        }
+
         $aiReview = $ai->reviewReport($findings, $impression);
 
         $this->reviewResults[$detailId] = [
-            'completeness' => ['passed' => $missing->isEmpty(), 'missing' => $missing->toArray()],
+            'completeness' => $completeness,
             'ai_review'    => $aiReview,
         ];
 
@@ -848,13 +863,19 @@ new class extends Component
                             <div class="space-y-2">
                                 <flux:heading size="sm" class="font-semibold text-zinc-800 dark:text-zinc-200">Completeness</flux:heading>
                                 <div>
-                                    <template x-if="result.completeness.passed">
+                                    <template x-if="result.completeness.available === false">
+                                        <div class="flex items-center gap-2">
+                                            <flux:badge color="zinc" size="sm">Tidak Tersedia</flux:badge>
+                                            <flux:text size="sm" class="text-zinc-500">Checklist belum dibuat untuk jenis pemeriksaan ini. Buat di menu Configuration.</flux:text>
+                                        </div>
+                                    </template>
+                                    <template x-if="result.completeness.available === true && result.completeness.passed">
                                         <div class="flex items-center gap-2">
                                             <flux:badge color="green" size="sm">✓ Success</flux:badge>
                                             <flux:text size="sm">Semua bagian deskripsi lengkap.</flux:text>
                                         </div>
                                     </template>
-                                    <template x-if="!result.completeness.passed">
+                                    <template x-if="result.completeness.available === true && !result.completeness.passed">
                                         <div class="space-y-1.5">
                                             <div class="flex items-center gap-2">
                                                 <flux:badge color="red" size="sm">⚠ Missing Items</flux:badge>
