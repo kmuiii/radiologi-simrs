@@ -2,6 +2,7 @@
 
 use App\Models\AiPromptSetting;
 use App\Models\ReportTemplate;
+use App\Models\ExaminationType;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -22,11 +23,70 @@ new class extends Component
         $this->resetPage();
     }
 
+    public function resetFilter(): void
+    {
+        $this->reset('search');
+        $this->resetPage();
+    }
+
     // ===== Tab: Checklist Completeness =====
     public ?int $editingTemplateId = null;
     public string $templateExamName = '';
     public array $sections = [];
     public bool $isDefault = true;
+    public string $newTemplateExaminationTypeId = '';
+    public array $newSections = [''];
+
+    public function openCreateCompletenessModal(): void
+    {
+        $this->newTemplateExaminationTypeId = '';
+        $this->newSections = [''];
+        Flux::modal('create-completeness-form')->show();
+    }
+
+    public function addNewSectionField(): void
+    {
+        $this->newSections[] = '';
+    }
+
+    public function removeNewSectionField(int $index): void
+    {
+        unset($this->newSections[$index]);
+        $this->newSections = array_values($this->newSections);
+    }
+
+    public function createCompleteness(): void
+    {
+        $validated = $this->validate([
+            'newTemplateExaminationTypeId' => 'required|exists:examination_types,id',
+        ]);
+
+        $cleanSections = collect($this->newSections)->filter(fn ($s) => filled(trim($s)))->values()->toArray();
+
+        if (empty($cleanSections)) {
+            Flux::toast(heading: 'Gagal', text: 'Minimal harus ada 1 bagian checklist.', variant: 'danger');
+            return;
+        }
+
+        try {
+            $examType = ExaminationType::findOrFail($validated['newTemplateExaminationTypeId']);
+
+            ReportTemplate::create([
+                'examination_type_id' => $examType->id,
+                'template_name'       => $examType->name . ' (Default)',
+                'template_content'    => [
+                    'sections' => $cleanSections,
+                    'default_findings_structure' => implode("\n", array_map(fn ($s) => "{$s}: ", $cleanSections)),
+                ],
+                'is_default' => true,
+            ]);
+
+            Flux::toast(heading: 'Berhasil', text: "Checklist untuk \"{$examType->name}\" berhasil dibuat.", variant: 'success');
+            Flux::modal('create-completeness-form')->close();
+        } catch (\Throwable $e) {
+            Flux::toast(heading: 'Gagal', text: 'Terjadi kesalahan saat membuat checklist.', variant: 'danger');
+        }
+    }
 
     public function openEditTemplate(int $id): void
     {
@@ -131,13 +191,14 @@ new class extends Component
     public function with(): array
     {
         $query = ReportTemplate::with('examinationType');
+        $existingExamTypeIds = ReportTemplate::pluck('examination_type_id');
 
         if (filled($this->search)) {
             $query->where(function ($q) {
-                $q->where('template_name', 'like', '%' . $this->search . '%')
+                $q->where('template_name', 'ilike', '%' . $this->search . '%')
                   ->orWhereHas('examinationType', function ($q2) {
-                      $q2->where('name', 'like', '%' . $this->search . '%')
-                         ->orWhere('code', 'like', '%' . $this->search . '%');
+                      $q2->where('name', 'ilike', '%' . $this->search . '%')
+                         ->orWhere('code', 'ilike', '%' . $this->search . '%');
                   });
             });
         }
@@ -145,6 +206,7 @@ new class extends Component
         return [
             'templates' => $query->orderBy('id')->paginate($this->perPage),
             'promptSettings' => AiPromptSetting::with('updatedBy')->orderBy('id')->get(),
+            'examinationTypesWithoutTemplate' => ExaminationType::whereNotIn('id', $existingExamTypeIds)->orderBy('name')->get(),
         ];
     }
 } ?>
@@ -173,18 +235,28 @@ new class extends Component
     {{-- TAB: CHECKLIST COMPLETENESS --}}
     @if($activeTab === 'completeness')
         <flux:card>
-            <flux:heading size="lg" class="mb-4">Checklist Completeness per Jenis Pemeriksaan</flux:heading>
-            <flux:text class="mb-4 text-zinc-500">
-                Digunakan oleh AI Report Quality Checker untuk mengecek kelengkapan Findings secara Rule-Based.
-            </flux:text>
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <flux:heading size="lg">Checklist Completeness per Jenis Pemeriksaan</flux:heading>
+                    <flux:text class="text-zinc-500">
+                        Digunakan oleh AI Report Quality Checker untuk mengecek kelengkapan Findings secara Rule-Based.
+                    </flux:text>
+                </div>
+                <flux:button variant="primary" color="blue" icon="plus" wire:click="openCreateCompletenessModal">
+                    Buat Checklist Baru
+                </flux:button>
+            </div>
 
-            <div class="flex flex-wrap items-end gap-4 mb-4">
+            <div class="flex items-end gap-2 mb-4">
                 <flux:field class="flex-1 max-w-sm">
                     <flux:input wire:model.live.debounce.400ms="search" placeholder="Cari nama atau kode..." icon="magnifying-glass" />
                 </flux:field>
+                <flux:field>
+                    <flux:button variant="ghost" icon="x-mark" wire:click="resetFilter">Batal</flux:button>
+                </flux:field>
             </div>
 
-            <div class="flex items-center gap-2 text-sm">
+            <div class="flex items-center gap-2 mb-3 text-sm">
                 <span>Tampilkan</span>
                 <flux:select wire:model.live="perPage" size="sm" class="w-20">
                     <flux:select.option value="10">10</flux:select.option>
@@ -193,6 +265,13 @@ new class extends Component
                 </flux:select>
                 <span>entri</span>
             </div>
+
+            @if($examinationTypesWithoutTemplate->isNotEmpty())
+                <div class="mb-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-sm text-amber-700 dark:text-amber-400">
+                    ⚠ {{ $examinationTypesWithoutTemplate->count() }} jenis pemeriksaan belum punya checklist:
+                    {{ $examinationTypesWithoutTemplate->pluck('name')->implode(', ') }}
+                </div>
+            @endif
 
             <flux:table :paginate="$templates">
                 <flux:table.columns>
@@ -292,6 +371,55 @@ new class extends Component
                     <flux:button variant="ghost">Batal</flux:button>
                 </flux:modal.close>
                 <flux:button type="submit" variant="primary" color="blue">Simpan</flux:button>
+            </div>
+        </form>
+    </flux:modal>
+
+    {{-- MODAL: Buat Checklist Baru --}}
+    <flux:modal name="create-completeness-form" class="md:w-[36rem]">
+        <form wire:submit="createCompleteness" class="space-y-4">
+            <div>
+                <flux:heading size="lg">Buat Checklist Baru</flux:heading>
+                <flux:subheading>Pilih jenis pemeriksaan yang belum punya checklist.</flux:subheading>
+            </div>
+
+            <flux:field>
+                <flux:label>Jenis Pemeriksaan</flux:label>
+                <flux:select wire:model="newTemplateExaminationTypeId">
+                    <flux:select.option value="">- Pilih -</flux:select.option>
+                    @foreach($examinationTypesWithoutTemplate as $et)
+                        <flux:select.option value="{{ $et->id }}">{{ $et->name }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+                <flux:error name="newTemplateExaminationTypeId" />
+                @if($examinationTypesWithoutTemplate->isEmpty())
+                    <p class="text-xs text-zinc-400 mt-1">Semua jenis pemeriksaan sudah punya checklist.</p>
+                @endif
+            </flux:field>
+
+            <div class="space-y-2">
+                <flux:label>Bagian Checklist</flux:label>
+                @foreach($newSections as $index => $section)
+                    <div class="flex gap-2">
+                        <flux:input wire:model="newSections.{{ $index }}" placeholder="misal: Cor" />
+                        <flux:button type="button" size="sm" variant="ghost" wire:click="removeNewSectionField({{ $index }})">
+                            <x-heroicon-o-trash class="size-4" />
+                        </flux:button>
+                    </div>
+                @endforeach
+
+                <flux:button type="button" size="sm" variant="ghost" icon="plus" wire:click="addNewSectionField">
+                    Tambah Bagian
+                </flux:button>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                <flux:modal.close>
+                    <flux:button variant="ghost">Batal</flux:button>
+                </flux:modal.close>
+                <flux:button type="submit" variant="primary" color="blue" :disabled="$examinationTypesWithoutTemplate->isEmpty()">
+                    Buat Checklist
+                </flux:button>
             </div>
         </form>
     </flux:modal>
