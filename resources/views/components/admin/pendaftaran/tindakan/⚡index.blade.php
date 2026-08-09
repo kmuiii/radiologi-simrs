@@ -15,6 +15,7 @@ use Laravolt\Indonesia\Models\Province;
 use Laravolt\Indonesia\Models\Village;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Storage;
 
 new class extends Component
 {
@@ -313,6 +314,10 @@ new class extends Component
         }
         try {
             $tindakan = Tindakan::findOrFail($this->deletingTindakanId);
+            
+            // Hapus folder gambar fisik terkait tindakan ini dari storage
+            Storage::disk('public')->deleteDirectory("radiology/{$tindakan->id}");
+            
             $tindakan->delete();
 
             Flux::toast(heading: 'Berhasil', text: 'Order berhasil dihapus.', variant: 'success');
