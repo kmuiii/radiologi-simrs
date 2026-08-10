@@ -228,10 +228,14 @@ new class extends Component
             Flux::toast(heading: 'Berhasil', text: 'Gambar berhasil diunggah.', variant: 'success');
         } catch (\Throwable $e) {
             logger()->error('Upload gambar gagal: ' . $e->getMessage(), ['exception' => $e]);
-            Flux::toast(heading: 'Upload Gagal', text: 'Terjadi kesalahan saat menyimpan gambar.', variant: 'danger');
             $this->singleImageUpload = null;
             $this->uploadingDetailId = null;
         }
+    }
+
+    public function triggerToast(string $message): void
+    {
+        Flux::toast(heading: 'Upload Gagal', text: $message, variant: 'danger');
     }
 
     public function confirmDeleteImage(): void
@@ -677,6 +681,14 @@ new class extends Component
                                     accept="image/*"
                                     class="hidden"
                                     wire:model="singleImageUpload"
+                                    x-on:change="
+                                        const file = $event.target.files[0];
+                                        if (file && file.size > 5 * 1024 * 1024) {
+                                            $event.preventDefault();
+                                            $event.target.value = '';
+                                            $wire.triggerToast('Ukuran file maksimal adalah 5MB.');
+                                        }
+                                    "
                                 />
 
                                 {{-- Loading indicator --}}
