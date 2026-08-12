@@ -492,7 +492,7 @@ new class extends Component
                             <flux:dropdown>
                                 <flux:button size="sm" variant="ghost" icon:trailing="chevron-down">Aksi</flux:button>
                                 <flux:menu>
-                                    <flux:menu.item icon="pencil-square" icon:variant="outline" href="{{ route('radiology.pemeriksaan.show', $t) }}">
+                                    <flux:menu.item icon="pencil-square" icon:variant="outline" href="{{ route('radiology.pemeriksaan.show', $t) }}" wire:navigate>
                                         Periksa Pasien
                                     </flux:menu.item>
                                     <flux:menu.item icon="check-circle" icon:variant="outline" wire:click="openDiterimaModal({{ $t->id }})">
